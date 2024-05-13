@@ -10,4 +10,6 @@ add_executable(shpa main.cpp
         fast_set.h
         path.cpp
         path.h
+        shpa.cpp
+        shpa.h
 )

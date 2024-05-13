@@ -31,6 +31,30 @@ int Path::get_length() const {
   return m_length;
 }
 
+std::vector<Edge>& Path::get_edges() {
+  return m_edges;
+}
+
+bool Path::empty() const {
+  return m_edges.empty();
+}
+
+void Path::trim_front(unsigned int n) {
+  while (!m_edges.empty() && n > 0) {
+    m_length -= m_edges.front().weight;
+    m_edges.erase(m_edges.begin());
+    --n;
+  }
+}
+
+void Path::trim_back(unsigned int n) {
+  while (!m_edges.empty() && n > 0) {
+    m_length -= m_edges.back().weight;
+    m_edges.pop_back();
+    --n;
+  }
+}
+
 Path Path::operator+(const Edge& e) const {
   Path p = *this;
   p.add_edge(e);
@@ -38,7 +62,7 @@ Path Path::operator+(const Edge& e) const {
 }
 
 Path Path::operator+(const Path& p) const {
-  if (!m_edges.empty()) {
+  if (m_edges.empty()) {
     return p;
   }
   if (p.m_edges.empty()) {

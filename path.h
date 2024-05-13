@@ -21,6 +21,10 @@ class Path {
 
   bool add_edge(const Edge& e);
   int get_length() const;
+  std::vector<Edge>& get_edges();
+  bool empty() const;
+  void trim_front(unsigned int n);
+  void trim_back(unsigned int n);
 
   Path operator+(const Edge& e) const;
   Path operator+(const Path& p) const;

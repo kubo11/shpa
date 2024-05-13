@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <algorithm>
 
 Graph::Graph(unsigned int n) {
   m_incidence_array.reserve(n-1);
@@ -17,6 +18,16 @@ int Graph::get_weight(unsigned int u, unsigned int v) const {
   }
 
   return m_incidence_array[std::max(u, v)-1][std::min(u, v)];
+}
+
+void Graph::set_weight(unsigned int u, unsigned int v, int w) {
+  if (std::max(u, v) > m_incidence_array.size()) {
+    throw std::invalid_argument("Exceeded graph\'s vertex count.");
+  }
+  if (u == v) {
+    return;
+  }
+  m_incidence_array[std::max(u, v) - 1][std::min(u, v)] = w;
 }
 
 FastSet Graph::get_neighbours(unsigned int v) const {

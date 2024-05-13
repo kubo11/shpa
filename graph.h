@@ -16,6 +16,7 @@ class Graph {
   ~Graph() = default;
 
   int get_weight(unsigned int u, unsigned int v) const;
+  void set_weight(unsigned int u, unsigned int v, int w);
   FastSet get_neighbours(unsigned int v) const;
   FastSet get_vertices() const;
   unsigned int get_rank() const;
