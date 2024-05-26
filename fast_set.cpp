@@ -113,14 +113,27 @@ void FastSet::set(unsigned int n, bool v) {
   }
 }
 
+void FastSet::calc_subsets(const std::function<void(const FastSet&)> func, FastSet& subset, int index) const {
+    func(subset);
+    int i = index;
+    auto it = begin();
+    while (index > 0) {
+        ++it;
+        --index;
+    }
+    for (it;it != end(); ++it, ++i) {
+        subset.set(*it, true);
+        calc_subsets(func, subset, i + 1);
+        subset.set(*it, false);
+    }
+}
+
 void FastSet::enumerate_subsets(const std::function<void(const FastSet&)> func) const {
   if (m_size == 0) {
     return;
   }
-  func(*this);
-  for (const auto it : *this) {
-    (*this - it).enumerate_subsets(func);
-  }
+  auto set = FastSet(get_rank());
+  calc_subsets(func, set, 0);
 }
 
 const FastSet::iterator FastSet::begin() const {

@@ -54,6 +54,8 @@ class FastSet {
   friend std::ostream& operator<<(std::ostream& out, const FastSet& s);
 
  private:
+  void calc_subsets(const std::function<void(const FastSet&)> func, FastSet& subset, int index) const;
+
   static constexpr unsigned int chunk_size = 32;
   std::vector<uint32_t> m_bits;
   unsigned int m_rank;
