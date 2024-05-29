@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iostream>
+#include <limits>
+//#include <cstdint>
 
 struct Edge {
   unsigned int beg;
@@ -14,7 +16,7 @@ struct Edge {
 
 class Path {
  public:
-  static constexpr int inf = INT32_MAX;
+  static constexpr int inf = std::numeric_limits<int>::max();
   Path();
   Path(const std::vector<Edge>& edges);
   ~Path() = default;
