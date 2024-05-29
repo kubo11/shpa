@@ -84,16 +84,16 @@ bool Path::operator==(const Path& other) const {
 
 std::ostream& operator<<(std::ostream& out, const Path& p) {
   if (p.m_length == Path::inf) {
-    std::cout << "inf";
+    out << "inf";
   }
   else {
-    std::cout << p.m_length << std::endl;
+    out << p.m_length << std::endl;
   }
   for (const auto& e : p.m_edges) {
-    std::cout << e.beg << " ";
+    out << e.beg << " ";
   }
   if (!p.m_edges.empty()) {
-    std::cout << p.m_edges.back().end;
+    out << p.m_edges.back().end;
   }
 
   return out;
