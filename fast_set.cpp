@@ -169,9 +169,9 @@ FastSet FastSet::operator&(const FastSet& other) const {
       (std::min(get_rank(), other.get_rank()) - 1) / FastSet::chunk_size + 1;
   for (int i = 0; i < size; ++i) {
     set.m_bits[i] = m_bits[i] & other.m_bits[i];
-    //set.m_size += std::popcount(set.m_bits[i]);
+//    set.m_size += std::popcount(set.m_bits[i]);
     for (int j = 0; j < FastSet::chunk_size; ++j) {
-      if (set.m_bits[i] & (1 << i)) {
+      if (set.m_bits[i] & (1 << j)) {
         set.m_size++;
       }
     }
@@ -195,11 +195,11 @@ FastSet FastSet::operator|(const FastSet& other) const {
     }
 
     for (int j = 0; j < FastSet::chunk_size; ++j) {
-      if (set.m_bits[i] & (1 << i)) {
+      if (set.m_bits[i] & (1 << j)) {
         set.m_size++;
       }
     }
-    //set.m_size += std::popcount(set.m_bits[i]);
+//    set.m_size += std::popcount(set.m_bits[i]);
   }
   return set;
 }
