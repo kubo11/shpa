@@ -27,9 +27,13 @@ Path hpa3_bf(const Graph& g, unsigned int s, unsigned int f) {
   for (auto vv : (g.get_vertices() - std::vector<unsigned int>{s, f})) {
     v[i++] = vv;
   }
-  return Path({Edge{s, v[0], g.get_weight(s, v[0])},
-                    Edge{v[0], v[1], g.get_weight(v[0], v[1])},
-                    Edge{v[1], f, g.get_weight(v[1], f)}});
+  auto p1 = Path({Edge{s, v[0], g.get_weight(s, v[0])},
+                  Edge{v[0], v[1], g.get_weight(v[0], v[1])},
+                  Edge{v[1], f, g.get_weight(v[1], f)}});
+  auto p2 = Path({Edge{s, v[1], g.get_weight(s, v[1])},
+                  Edge{v[1], v[0], g.get_weight(v[1], v[0])},
+                  Edge{v[0], f, g.get_weight(v[0], f)}});
+  return p1.get_length() < p2.get_length() ? p1 : p2;
 }
 
 Path hpa3(const Graph& g, unsigned int s, unsigned int f) {
@@ -42,7 +46,7 @@ Path hpa3(const Graph& g, unsigned int s, unsigned int f) {
     auto u = v_prim - c;
     u.enumerate_subsets([&u, &g, &minP, s, f, c](const auto& a){
       if ((a.get_size() != u.get_size() / 2 &&
-           a.get_size() != u.get_size() / 2 + 1) ||
+           (a.get_size() != u.get_size() / 2 + 1 || u.get_size() <= 2)) ||
           !a.get(*u.begin())) {
         return;
       }
