@@ -51,35 +51,47 @@ Path hpa3(const Graph& g, unsigned int s, unsigned int f) {
         return;
       }
       auto b = u - a;
-      auto a_prim = a + std::vector<unsigned int>{s, c};
-      auto b_prim = b + std::vector<unsigned int>{c, f};
-      std::unordered_map<unsigned int, unsigned int> a_prim_map, a_prim_reverse_map, b_prim_map, b_prim_reverse_map;
-      unsigned int a_new = 0, b_new = 0;
-      for (unsigned int a_old : a_prim) {
-        a_prim_reverse_map[a_new] = a_old;
-        a_prim_map[a_old] = a_new++;
+      auto p1 = process_subgraphs(g, a + std::vector<unsigned int>{s, c},
+                                  b + std::vector<unsigned int>{c, f}, s, c, f);
+      auto p2 = process_subgraphs(g, b + std::vector<unsigned int>{s, c},
+                                  a + std::vector<unsigned int>{c, f}, s, c, f);
+      if (!p1.empty() && minP.get_length() > p1.get_length()) {
+        minP = p1;
       }
-      for (unsigned int b_old : b_prim) {
-        b_prim_reverse_map[b_new] =  b_old;
-        b_prim_map[b_old] = b_new++;
-      }
-      auto p1 = hpa3(g.induce(a_prim), a_prim_map.at(s), a_prim_map.at(c));
-      auto p2 = hpa3(g.induce(b_prim), b_prim_map.at(c), b_prim_map.at(f));
-      if (!p1.empty() && !p2.empty()) {
-        for (auto& e : p1.get_edges()) {
-          e.beg = a_prim_reverse_map.at(e.beg);
-          e.end = a_prim_reverse_map.at(e.end);
-        }
-        for (auto& e : p2.get_edges()) {
-          e.beg = b_prim_reverse_map.at(e.beg);
-          e.end = b_prim_reverse_map.at(e.end);
-        }
-        auto p = p1 + p2;
-        if (minP.get_length() > p.get_length()) {
-          minP = p;
-        }
+      if (!p2.empty() && minP.get_length() > p2.get_length()) {
+        minP = p2;
       }
     });
   }
   return minP;
+}
+
+Path process_subgraphs(const Graph& g, const FastSet& a_prim,
+    const FastSet& b_prim, unsigned int s, unsigned int c,
+    unsigned int f) {
+  std::unordered_map<unsigned int, unsigned int> a_prim_map, a_prim_reverse_map,
+      b_prim_map, b_prim_reverse_map;
+  unsigned int a_new = 0, b_new = 0;
+  for (unsigned int a_old : a_prim) {
+    a_prim_reverse_map[a_new] = a_old;
+    a_prim_map[a_old] = a_new++;
+  }
+  for (unsigned int b_old : b_prim) {
+    b_prim_reverse_map[b_new] = b_old;
+    b_prim_map[b_old] = b_new++;
+  }
+  auto p1 = hpa3(g.induce(a_prim), a_prim_map.at(s), a_prim_map.at(c));
+  auto p2 = hpa3(g.induce(b_prim), b_prim_map.at(c), b_prim_map.at(f));
+  if (!p1.empty() && !p2.empty()) {
+    for (auto& e : p1.get_edges()) {
+      e.beg = a_prim_reverse_map.at(e.beg);
+      e.end = a_prim_reverse_map.at(e.end);
+    }
+    for (auto& e : p2.get_edges()) {
+      e.beg = b_prim_reverse_map.at(e.beg);
+      e.end = b_prim_reverse_map.at(e.end);
+    }
+    return p1 + p2;
+  }
+  return Path();
 }
